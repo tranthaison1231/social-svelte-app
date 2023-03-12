@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { Modal } from 'flowbite-svelte';
+	import Modal from '$lib/components/Modal.svelte';
 
 	export let selectBanner: (banner: string) => void;
-	export let open = false;
 
 	const BANNERS = [
 		'https://supermomos-app-resources-us.s3.amazonaws.com/Images/SocialBanner/banner_1.jpg',
@@ -19,13 +18,14 @@
 	];
 </script>
 
-<Modal title="Choose a banner" bind:open size="xl" autoclose>
-	<div grid="~ cols-6" gap-3 class="w-full">
+<Modal open={$$props.open} onCancel={$$props.onCancel}>
+	<div grid="~ cols-6" gap-3 w-full>
 		{#each BANNERS as banner}
 			<img
 				src={banner}
 				cursor-pointer
 				object-cover
+				aspect-square
 				w-full
 				alt="banner"
 				aria-hidden="true"

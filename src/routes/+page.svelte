@@ -1,19 +1,28 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import Button from '$lib/components/Button.svelte';
 	import Checkbox from '$lib/components/Checkbox.svelte';
 	import Input from '$lib/components/Input.svelte';
 	import Radio from '$lib/components/Radio.svelte';
 	import Tag from '$lib/components/Tag.svelte';
+	import type { ActionData } from './$types';
 	import BannerModal from './BannerModal.svelte';
 
 	const TAGS = ['Product', 'Marketing', 'Design', 'Engineering'];
 
-	let isOpenModal = false;
+	export let form: ActionData;
+
 	let banner: string | null = null;
 	let selectedTags: string[] = [];
+	let isOpenModal = false;
 
 	const openModal = () => {
 		isOpenModal = true;
+	};
+
+	const closeModal = () => {
+		isOpenModal = false;
+		console.log(12312);
 	};
 
 	const selectTag = (tag: string) => () => {
@@ -30,11 +39,12 @@
 	};
 </script>
 
-<div>
-	<BannerModal bind:open={isOpenModal} {selectBanner} />
+<BannerModal open={isOpenModal} onCancel={closeModal} {selectBanner} />
+<form method="POST" use:enhance>
 	<div grid="~ cols-[1fr_1.2fr]" gap-5>
 		<div w-full>
 			<input
+				name="title"
 				p="x-[12px] y-[4px]"
 				text="5xl white"
 				h-16
@@ -43,20 +53,37 @@
 				box-border
 				class="bg-[#942F70]"
 			/>
+			{#if form?.errors.title}
+				<p class="mt-1 text-red-500">{form?.errors.title}</p>
+			{/if}
 			<div grid="~ cols-2" mt-7 gap-6>
 				<div flex gap-4 w-full>
 					<img src="$lib/assets/date.svg" alt="Date Picker" width={33} height={33} priority />
-					<Input />
+					<div>
+						<Input name="date" />
+						{#if form?.errors.time}
+							<p class="mt-1 text-red-500">{form?.errors.time}</p>
+						{/if}
+					</div>
 				</div>
 				<div flex gap-4 w-full>
 					<img src="$lib/assets/time.svg" alt="Time Picker" width={33} height={33} priority />
-					<Input />
+					<div>
+						<Input name="time" />
+						{#if form?.errors.time}
+							<p class="mt-1 text-red-500">{form?.errors.time}</p>
+						{/if}
+					</div>
 				</div>
 			</div>
 			<div flex gap-4 items-center mt-7>
 				<img src="$lib/assets/address.svg" alt="Address" width={36.8} height={33} priority />
-				<Input placeholder="Venue" />
+				<Input name="venue" placeholder="Venue" />
 			</div>
+			{#if form?.errors.venue}
+				<p class="mt-1 text-red-500">{form?.errors.venue}</p>
+			{/if}
+
 			<div grid="~ cols-2" mt-3 gap-9>
 				<div flex gap-4 w-full>
 					<img
@@ -112,7 +139,7 @@
 				<p class="m-0 bg-[#F3F452] w-fit p-3 text-[#942F70] font-bold text-3xl">Settings</p>
 				<Checkbox class="mt-6">I want to approve attendess</Checkbox>
 				<p text="base gray-700" font-bold class="mt-[26px]">Privacy</p>
-				<div class="flex gap-[32px] mt-2">
+				<div class="flex gap-[32px] mt-1">
 					<Radio value="Public" name="privacy">Public</Radio>
 					<Radio value="Curated Audience" name="privacy">Curated Audience</Radio>
 					<Radio value="Community Only" name="privacy">Community Only</Radio>
@@ -138,7 +165,7 @@
 					{/each}
 				</div>
 			</div>
-			<Button class="mt-8" />
+			<Button type="submit" class="mt-8" />
 		</div>
 	</div>
-</div>
+</form>
